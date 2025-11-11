@@ -63,11 +63,11 @@ nav ul {
   width: 100%;
   padding: 0;
   margin: 10px 0;
-  background: rgb(13, 13, 13);
+  background: rgb(0, 0, 0);
   border-radius: 5px;
 }
 
-nav li {
+nav ul a {
   color: white;
   text-decoration: none;
   padding: 10px;
@@ -80,8 +80,6 @@ body h1 {
 }
 
 /* Hero */
-
-
 
 .hero {
   display: flex;
@@ -133,7 +131,8 @@ body h1 {
 }
 
 .reviews,
-.upgrades {
+.upgrades,
+.not-found {
   width: 100%;
 }
 
