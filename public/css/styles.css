@@ -281,24 +281,42 @@ footer {
 .account-form input {
   padding: .7rem;
   border-radius: 5px;
-  border: 1px solid #0077cc;;
+  border: 1px solid #0077cc;
 }
 
-.submit {
+.account-container button,
+.management-link,
+#classificationList {
   padding: .8rem;
   border: none;
   background: #0077cc;
   color: white;
   border-radius: 5px;
   cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  font-size: 1rem;
 }
 
-.submit:hover {
+.account-container button:hover,
+.management-link:hover {
   background: #005fa3;
 }
 
+.account-container .cancel-button:hover {
+  background: #a30000;
+}
 
-.register-link {
+.management-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  list-style: none;
+  padding: 0;
+}
+
+.register-link,
+.management-link:nth-child(2) {
   margin-top: 1rem;
   text-align: center;
 }

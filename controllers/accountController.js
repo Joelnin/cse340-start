@@ -22,7 +22,7 @@ accountCont.buildLogin = async function (req, res, next) {
 accountCont.buildRegister = async function (req, res, next) {
   let nav = await utilities.getNav()
   res.render("account/register", {
-    title: "Register",
+    title: "Registration",
     nav,
     errors: null,
   })
@@ -59,7 +59,6 @@ accountCont.registerAccount = async function (req, res) {
       "notice",
       `Congratulations, you\'re registered ${account_firstname}. Please log in.`
     )
-      console.log("Esto está funcionando")
     res.status(201).render("account/login", {
       title: "Login",
       nav,
