@@ -30,31 +30,31 @@ Util.getNav = async function (req, res, next) {
 /* **************************************
 * Build the classification view HTML
 * ************************************ */
-Util.buildClassificationGrid = async function(data){
+Util.buildClassificationGrid = async function (data) {
   let grid
-  if(data.length > 0){
+  if (data.length > 0) {
     grid = '<ul id="inv-display">'
-    data.forEach(vehicle => { 
+    data.forEach(vehicle => {
       grid += '<li>'
-      grid +=  '<a href="../../inv/detail/'+ vehicle.inv_id 
-      + '" title="View ' + vehicle.inv_make + ' '+ vehicle.inv_model 
-      + 'details"><img src="' + vehicle.inv_thumbnail 
-      +'" alt="Image of '+ vehicle.inv_make + ' ' + vehicle.inv_model 
-      +' on CSE Motors" /></a>'
+      grid += '<a href="../../inv/detail/' + vehicle.inv_id
+        + '" title="View ' + vehicle.inv_make + ' ' + vehicle.inv_model
+        + 'details"><img src="' + vehicle.inv_thumbnail
+        + '" alt="Image of ' + vehicle.inv_make + ' ' + vehicle.inv_model
+        + ' on CSE Motors" /></a>'
       grid += '<div class="namePrice">'
       grid += '<hr />'
       grid += '<h2>'
-      grid += '<a href="../../inv/detail/' + vehicle.inv_id +'" title="View ' 
-      + vehicle.inv_make + ' ' + vehicle.inv_model + ' details">' 
-      + vehicle.inv_make + ' ' + vehicle.inv_model + '</a>'
+      grid += '<a href="../../inv/detail/' + vehicle.inv_id + '" title="View '
+        + vehicle.inv_make + ' ' + vehicle.inv_model + ' details">'
+        + vehicle.inv_make + ' ' + vehicle.inv_model + '</a>'
       grid += '</h2>'
-      grid += '<span>$' 
-      + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
+      grid += '<span>$'
+        + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
       grid += '</div>'
       grid += '</li>'
     })
     grid += '</ul>'
-  } else { 
+  } else {
     grid += '<p class="notice">Sorry, no matching vehicles could be found.</p>'
   }
   return grid
@@ -68,47 +68,47 @@ Util.buildDetailsDisplay = async function (data) {
   const vehicle = data[0]
 
   
-    let flex
+  let flex
 
-    flex = '<div id="details-flex">'
+  flex = '<div id="details-flex">'
 
-    // flex += '<p><span class="price">' + JSON.stringify(vehicle, null, 2)    + '</span></p>'
+  // flex += '<p><span class="price">' + JSON.stringify(vehicle, null, 2)    + '</span></p>'
 
-    // Image part
+  // Image part
     
-    flex += '<div id="car-image">'
+  flex += '<div id="car-image">'
     
-    flex += '<img src="' + vehicle.inv_image
-      + '" alt="Image of ' + vehicle.inv_make + ' ' + vehicle.inv_model
-      + ' on CSE Motors" />'
+  flex += '<img src="' + vehicle.inv_image
+    + '" alt="Image of ' + vehicle.inv_make + ' ' + vehicle.inv_model
+    + ' on CSE Motors" />'
     
-    flex += '</div>'
+  flex += '</div>'
     
-    // Details part
-    flex += '<div id="car-details">'
+  // Details part
+  flex += '<div id="car-details">'
 
-    flex += '<h2>' + vehicle.inv_make + ' ' + vehicle.inv_model
+  flex += '<h2>' + vehicle.inv_make + ' ' + vehicle.inv_model
     
-      + ' Details </h2>'
+    + ' Details </h2>'
     
-    flex += '<p class="price">Price: <span>$'
+  flex += '<p class="price">Price: <span>$'
     
-      + new Intl.NumberFormat('en-US').format(vehicle.inv_price)
+    + new Intl.NumberFormat('en-US').format(vehicle.inv_price)
       
-      + '</span></p>'
+    + '</span></p>'
 
-    flex += '<p><b>Description: </b><span>' + vehicle.inv_description
-      + '</span></p>'
+  flex += '<p><b>Description: </b><span>' + vehicle.inv_description
+    + '</span></p>'
 
-    flex += '<p><b>Color: </b><span>' + vehicle.inv_color
-      + '</span></p>'
+  flex += '<p><b>Color: </b><span>' + vehicle.inv_color
+    + '</span></p>'
 
-    flex += '<p><b>Miles: </b><span>' + new Intl.NumberFormat('en-US').format(vehicle.inv_miles)
-      + '</span></p>'
+  flex += '<p><b>Miles: </b><span>' + new Intl.NumberFormat('en-US').format(vehicle.inv_miles)
+    + '</span></p>'
     
-    flex += '</div>'
+  flex += '</div>'
 
-    flex += '</div>'
+  flex += '</div>'
 
   return flex
 }
@@ -147,36 +147,64 @@ Util.buildClassificationList = async function (classification_id = null) {
 * Middleware to check token validity
 **************************************** */
 Util.checkJWTToken = (req, res, next) => {
- if (req.cookies.jwt) {
-  jwt.verify(
-   req.cookies.jwt,
-   process.env.ACCESS_TOKEN_SECRET,
-   function (err, accountData) {
-    if (err) {
-     req.flash("Please log in")
-     res.clearCookie("jwt")
-     return res.redirect("/account/login")
-    }
-    res.locals.accountData = accountData
-    res.locals.loggedin = 1
+  if (req.cookies.jwt) {
+    jwt.verify(
+      req.cookies.jwt,
+      process.env.ACCESS_TOKEN_SECRET,
+      function (err, accountData) {
+        if (err) {
+          req.flash("Please log in")
+          res.clearCookie("jwt")
+          return res.redirect("/account/login")
+        }
+        res.locals.accountData = accountData
+        res.locals.loggedin = 1
+        next()
+      }
+    )
+  } else {
     next()
-   })
- } else {
-  next()
- }
+  }
 }
 
 
 /* ****************************************
  *  Check Login
  * ************************************ */
- Util.checkLogin = (req, res, next) => {
+Util.checkLogin = (req, res, next) => {
   if (res.locals.loggedin) {
     next()
   } else {
     req.flash("notice", "Please log in.")
     return res.redirect("/account/login")
   }
- }
+}
+ 
+Util.checkEmployeeOrAdmin = (req, res, next) => {
+
+  try {
+    const payload = res.locals.accountData
+
+    console.log(payload)
+
+    if (payload.account_type === "Employee" || payload.account_type === "Admin") {
+
+      res.locals.accountData = payload
+
+      return next()
+    }
+
+    // If the logged user is not an admin or employee
+    req.flash("notice", "You do not have permission to access this section")
+    return res.redirect("account/login")
+
+  } catch (err) {
+
+    req.flash("notice", "Invalid session. Please log in again.")
+
+    return res.redirect("account/login")
+
+  }
+}
 
 module.exports = Util

@@ -29,6 +29,18 @@ header {
   border-radius: 2rem 2rem 0 0;
 }
 
+.logged-user {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.logged-user .welcome-message {
+  margin: 0 10px;
+  justify-self: center;
+  align-self: center;
+}
+
 header a {
   text-decoration: none;
   color: black;
@@ -51,6 +63,7 @@ header > div {
   font-size: 0.8rem;
   text-transform: uppercase;
   align-self: center;
+  width: 100%;
 }
 
 /* Navigation */
@@ -87,7 +100,7 @@ body h1 {
   text-align: center;
   background-image: url(/images/vehicles/delorean.jpg);
   background-repeat: no-repeat;
-  background-size:contain;
+  background-size: contain;
   background-position: center;
   height: 250px;
 }
@@ -286,6 +299,7 @@ footer {
 
 .account-container button,
 .management-link,
+.cancel-button,
 #classificationList {
   padding: .8rem;
   border: none;
@@ -327,8 +341,27 @@ input:focus:invalid {
 }
 
 input:required:valid {
-    border: 2px solid green;
+  border: 2px solid green;
 }
+
+/* Inventory Table */
+
+#inventoryDisplay {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+#inventoryDisplay th,
+#inventoryDisplay td{
+  padding: 0.5rem;
+  border-bottom: 1px solid #070303;
+}
+
+#inventoryDisplay a {
+  padding: 8px;
+}
+
 
 /* Bigger Screen Style */
 
@@ -354,6 +387,10 @@ input:required:valid {
     align-items: center;
   }
 
+.logged-user  {
+  flex-direction: row;
+}
+
   /* Hero */
 
   h2 {
@@ -369,6 +406,8 @@ input:required:valid {
   .delorean-info > img {
     margin-bottom: 1rem;
   }
+
+
 
   /* Content Sections */
 
@@ -387,4 +426,16 @@ input:required:valid {
   .upgrade-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  /* Table */
+
+  #inventoryDisplay th,
+  #inventoryDisplay td {
+    padding: 0.75rem 1rem;
+  }
+
+  #inventoryDisplay {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
 }
