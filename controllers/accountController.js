@@ -11,11 +11,11 @@ const accountCont = {}
 * *************************************** */
 accountCont.buildLogin = async function (req, res, next) {
   let nav = await utilities.getNav()
-  // const accountData = res.locals.accountData
+  const accountData = res.locals.accountData
 
-  // if (accountData) {
-  //     return res.redirect("/account/")
-  // }
+  if (accountData) {
+      return res.redirect("/account/")
+  }
 
   res.render("account/login", {
     title: "Login",
@@ -29,6 +29,11 @@ accountCont.buildLogin = async function (req, res, next) {
 * *************************************** */
 accountCont.buildRegister = async function (req, res, next) {
   let nav = await utilities.getNav()
+    const accountData = res.locals.accountData
+
+  if (accountData) {
+      return res.redirect("/account/")
+  }
   res.render("account/register", {
     title: "Registration",
     nav,
