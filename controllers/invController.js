@@ -23,6 +23,7 @@ invCont.buildByClassificationId = async function (req, res, next) {
  *  Build vehicles details by details view
  * ************************** */
 invCont.buildByInventoryId = async function (req, res, next) {
+  // const account_id = 
   const inv_id = req.params.invId
   const data = await invModel.getDetailsByInventoryId(inv_id)
   const flex = await utilities.buildDetailsDisplay(data)
@@ -31,7 +32,8 @@ invCont.buildByInventoryId = async function (req, res, next) {
   res.render("./inventory/details", {
     title: vehicleName,
     nav,
-    flex
+    flex,
+    invId: inv_id,
   })
 }
 
@@ -158,7 +160,7 @@ invCont.buildEditInventoryById = async function (req, res, next) {
   let nav = await utilities.getNav()
   const data = await invModel.getDetailsByInventoryId(inv_id)
   const itemData = data[0]
-  console.log(data)
+  // console.log(data)
   const classificationSelect = await utilities.buildClassificationList(itemData.classification_id)
   const itemName = `${itemData.inv_make} ${itemData.inv_model}`
 
@@ -285,7 +287,6 @@ invCont.deleteInventory = async function (req, res, next) {
     inv_id
   )
 
-
   if (!deleteResult) {
     req.flash("notice", `The ${itemName} was successfully deleted.`)
     res.redirect("/inv/")
@@ -302,6 +303,76 @@ invCont.deleteInventory = async function (req, res, next) {
     inv_price,
     })
   }
+}
+
+
+
+/* ***************************
+ * Build favorites view
+ * ************************** */
+invCont.buildFavorites = async function (req, res, next) {
+  const account_id = req.params.accountId
+
+  const data = await invModel.getFavoritesByAccountId(account_id)
+  const grid = await utilities.buildFavoriteTable(data)
+  let nav = await utilities.getNav()
+
+
+  res.render("./inventory/favorites", {
+    title: "My Favorites",
+    nav,
+    grid: grid,
+    errors: null
+  })
+}
+
+/* ***************************************
+ *  Process add vehicle to favorites
+ * *************************************** */
+invCont.addFavorite = async function (req, res) {
+  const { account_id, inv_id } = req.body
+
+  if (!account_id) {
+    req.flash("notice", "Please log in to add favorites.")
+    return res.redirect("/account/login")
+  }
+
+  const exist = await invModel.isFavorite(account_id, inv_id)
+
+  if (!exist) {
+    const result = await invModel.addFavorite(account_id, inv_id)
+  
+  req.flash("notice", "Vehicle added to your favorites.")
+  }
+
+   else {
+    req.flash("notice", "Vehicle already in your favorites.")
+  }
+  res.redirect(`/inv/detail/${inv_id}`)
+}
+
+/* ***************************
+ * Delete a vehicle from favorites
+ * ************************** */
+invCont.deleteFavorite = async function (req, res) {
+  const { account_id, inv_id } = req.body
+
+
+  if (!account_id) {
+    req.flash("notice", "You must be logged in to modify favorites.")
+    return res.redirect("/account/login")
+  }
+
+  const result = await invModel.deleteFavorite(account_id, inv_id)
+
+  if (!result) {
+    req.flash("notice", "Vehicle removed from favorites.")
+  } else {
+    req.flash("notice", "Unable to remove the vehicle from favorites.")
+  }
+
+
+  res.redirect(`/inv/favorites/${account_id}`)
 }
 
 module.exports = invCont

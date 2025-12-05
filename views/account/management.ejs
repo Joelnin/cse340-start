@@ -28,13 +28,18 @@
     <!-- Link Update account (for everyone) -->
     <p class="management-container"><a class="management-link" href="/account/update/<%= accountData.account_id %>">Update Account Information</a></p>
 
+    <!-- JUST FOR THE CLIENTS -->
+    <% if (accountData.account_type=="Client" ) { %>
+        <p class="management-container"><a class="management-link" href="/inv/favorites/<%= accountData.account_id %>">Go to Favorites</a></p>
+    
+    <% } %>
 
     <!-- EMPLOYEE/ADMIN things-->
     <% if (accountData.account_type=="Employee" || accountData.account_type=="Admin" ) { %>
 
         <h3>Inventory Management</h3>
 
-        <p class="management-container"><a class="management-link" href="/inv">Go to Inventory Management</a></p>
+        <p class="management-container"><a class="management-link" href="/inv/">Go to Inventory Management</a></p>
 
     <% } %>
 

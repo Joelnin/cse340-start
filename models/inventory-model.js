@@ -129,6 +129,71 @@ async function deleteInventory(inv_id) {
   }
 }
 
+/* ***************************
+ *  Get all favorites for a user
+ * ************************** */
+async function getFavoritesByAccountId(account_id) {
+  try {
+    const data = await pool.query(
+      `SELECT f.account_id, f.inv_id, i.inv_make, i.inv_model, i.inv_year, i.inv_thumbnail, i.inv_price 
+     FROM public.favorites f
+     JOIN public.inventory i ON f.inv_id = i.inv_id
+     WHERE f.account_id = $1`,
+    [account_id]
+    )
+    return data.rows
+  } catch (error) {
+    console.error("getfavoritebyid error " + error)
+  }
+}
+
+/* ***************************
+ *  Add to favorites for a user
+ * ************************** */
+async function addFavorite(account_id, inv_id) {
+  try {
+    const sql = "INSERT INTO public.favorites (account_id, inv_id) VALUES ($1, $2) RETURNING *"
+
+    data = await pool.query(sql, [account_id, inv_id])
+
+  } catch (error) {
+    return error.message
+  }
+}
+
+async function isFavorite(account_id, inv_id) {
+  try {
+    const sql = "SELECT favorite_id FROM public.favorites WHERE account_id = $1 AND inv_id = $2"
+
+    const data = await pool.query(sql, [account_id, inv_id])
+
+    if (data.rows[0]) {
+      return true
+    } else {
+      return false
+    }
+
+  } catch (error) {
+    return error.message
+  }
+}
+
+/* ***************************
+ *  Remove from favorites for a user
+ * ************************** */
+async function deleteFavorite(account_id, inv_id) {
+  try {
+    const sql =
+      "DELETE FROM public.favorites WHERE account_id = $1 AND inv_id = $2"
+    const data = await pool.query(sql, [account_id, inv_id])
+    
+    return data.rows[0]
+  } catch (error) {
+    console.error("Delete Inventory Error")
+  }
+}
+
+
 module.exports = {
   getClassifications,
   getInventoryByClassificationId,
@@ -137,5 +202,9 @@ module.exports = {
   AddNewClassification,
   AddNewInventory,
   updateInventory,
-  deleteInventory
+  deleteInventory,
+  getFavoritesByAccountId,
+  addFavorite,
+  deleteFavorite,
+  isFavorite
 }

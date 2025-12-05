@@ -31,6 +31,12 @@ router.get("/edit/:invId", utilities.checkEmployeeOrAdmin, utilities.handleError
 // Route to build the delete inventory view 
 router.get("/delete/:invId", utilities.checkEmployeeOrAdmin, utilities.handleErrors(invController.buildDeleteInventoryById));
 
+//-- JUST FOR THE CLIENTS --//
+// Route to build the favorites view 
+router.get("/favorites/:accountId", utilities.checkClient, utilities.handleErrors(invController.buildFavorites));
+
+
+
 
 
 
@@ -66,7 +72,16 @@ router.post(
     utilities.checkEmployeeOrAdmin,
     utilities.handleErrors(invController.deleteInventory))
 
+// Process add to favorites data
+router.post(
+    "/favorites/add", 
+    utilities.handleErrors(invController.addFavorite))
 
+// Process delete to favorites data
+router.post(
+    "/favorites/delete", 
+    utilities.handleErrors(invController.deleteFavorite))
+    
 
 module.exports = router;
 

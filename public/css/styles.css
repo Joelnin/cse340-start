@@ -321,6 +321,10 @@ footer {
   background: #a30000;
 }
 
+button.cancel-button:hover {
+  background: #a30000;
+}
+
 .management-container {
   display: flex;
   flex-direction: column;
@@ -361,6 +365,30 @@ input:required:valid {
 #inventoryDisplay a {
   padding: 8px;
 }
+
+#favorites-table {
+  width: 100%;
+  text-align: center;
+font-size: 1.2rem;
+color: black;
+border: 1px solid black;
+}
+
+#favorites-table td {
+  padding: 5px;
+color: black;
+}
+
+#favorites-table a {
+  text-decoration: none;
+color: black;
+}
+
+#favorites-table thead {
+  background-color: #c5d9e2;
+}
+
+
 
 
 /* Bigger Screen Style */

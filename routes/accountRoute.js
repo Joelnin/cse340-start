@@ -12,7 +12,6 @@ router.get("/register", utilities.handleErrors(controller.buildRegister));
 
 router.get("/update/:accountId", utilities.handleErrors(controller.buildUpdate));
 
-
 // router.post('/register', utilities.handleErrors(controller.registerAccount))
 
 // Process the registration data

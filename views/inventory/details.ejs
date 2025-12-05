@@ -8,11 +8,17 @@
 
 <!-- Message Block -->
 
-<%# messages() %>
+<%- messages() %>
 
 <!-- Inventory Items Display -->
 
 <%- flex %>
-
+<% if (accountData.account_type=="Client" ) { %>
+    <form class="management-container" action="/inv/favorites/add" method="POST">
+        <input type="hidden" name="account_id" value="<%= accountData.account_id %>">
+        <input type="hidden" name="inv_id" value="<%= invId %>">
+        <button class="management-link" type="submit">Add to favorites</button>
+    </form>
+<% } %>
 
 

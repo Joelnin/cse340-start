@@ -66,7 +66,6 @@ Util.buildClassificationGrid = async function (data) {
 Util.buildDetailsDisplay = async function (data) {
 
   const vehicle = data[0]
-
   
   let flex
 
@@ -180,12 +179,15 @@ Util.checkLogin = (req, res, next) => {
   }
 }
  
+/* ****************************************
+ *  Check if Manager or Admin
+ * ************************************ */
 Util.checkEmployeeOrAdmin = (req, res, next) => {
 
   try {
     const payload = res.locals.accountData
 
-    console.log(payload)
+    // console.log(payload)
 
     if (payload.account_type === "Employee" || payload.account_type === "Admin") {
 
@@ -206,5 +208,91 @@ Util.checkEmployeeOrAdmin = (req, res, next) => {
 
   }
 }
+
+/* ****************************************
+ *  Check Client
+ * ************************************ */
+Util.checkClient = (req, res, next) => {
+
+  try {
+    const payload = res.locals.accountData
+
+    const account_id = parseInt(req.params.accountId)
+
+    // console.log(payload)
+
+    if (payload.account_type === "Client" && account_id === payload.account_id) {
+
+      res.locals.accountData = payload
+
+      return next()
+    }
+
+    // If the logged user tries to enter another favorites or they are and employee or admin
+    req.flash("notice", "Not permitted access. You should log in with your client account.")
+    return res.redirect("/account/")
+
+  } catch (err) {
+
+    req.flash("notice", "Invalid session. Please log in again.")
+
+    return res.redirect("/account/login")
+
+  }
+}
+
+/* **************************************
+* Build the favorites view HTML
+* ************************************ */
+Util.buildFavoriteTable = async function (data) {
+  // console.log(data)
+
+  let table = `
+      <thead>
+        <tr>
+          <th>Vehicle Name</th>
+          <th>Year</th>
+          <td>&nbsp;</td>
+        </tr>
+      </thead>
+    
+      <tbody>`
+    
+  if (data.length === 0) {
+    table += `
+        <tr>
+          <td colspan="5">You have no favorite vehicles here yet.</td>
+        </tr>
+        `
+  } else {
+    data.forEach(vehicle => {
+      table += `
+        <tr>
+          <td>
+            <a href="/inv/detail/${vehicle.inv_id}">
+              ${vehicle.inv_make} ${vehicle.inv_model} 
+            </a>
+          </td>
+          <td>
+              ${vehicle.inv_year}
+          </td>
+          <!-- Delete Button -->
+          <td>
+              <form action="/inv/favorites/delete" method="POST">
+                  <input type="hidden" name="account_id" value="${vehicle.account_id}" />
+                  <input type="hidden" name="inv_id" value="${vehicle.inv_id}" />
+                  <button class="cancel-button" type="submit">Delete</button>
+              </form>
+          </td>
+        </tr>
+      </tbody>
+    `
+    })
+  }
+
+  return table
+}
+
+
 
 module.exports = Util
