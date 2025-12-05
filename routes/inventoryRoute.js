@@ -36,10 +36,6 @@ router.get("/delete/:invId", utilities.checkEmployeeOrAdmin, utilities.handleErr
 router.get("/favorites/:accountId", utilities.checkClient, utilities.handleErrors(invController.buildFavorites));
 
 
-
-
-
-
 // Process the add-classification data
 router.post(
     "/add-classification",
@@ -74,12 +70,14 @@ router.post(
 
 // Process add to favorites data
 router.post(
-    "/favorites/add", 
+    "/favorites/add",
+    utilities.checkClient,
     utilities.handleErrors(invController.addFavorite))
 
 // Process delete to favorites data
 router.post(
     "/favorites/delete", 
+    utilities.checkClient,
     utilities.handleErrors(invController.deleteFavorite))
     
 
