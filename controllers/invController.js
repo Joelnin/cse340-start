@@ -340,9 +340,14 @@ invCont.addFavorite = async function (req, res) {
   const exist = await invModel.isFavorite(account_id, inv_id)
 
   if (!exist) {
+
     const result = await invModel.addFavorite(account_id, inv_id)
-  
+
+    if (!result) {
   req.flash("notice", "Vehicle added to your favorites.")
+
+    }
+  
   }
 
    else {

@@ -217,18 +217,16 @@ Util.checkClient = (req, res, next) => {
   try {
     const payload = res.locals.accountData
 
-    const account_id = parseInt(req.params.accountId)
-
     // console.log(payload)
 
-    if (payload.account_type === "Client" && account_id === payload.account_id) {
+    if (payload.account_type === "Client") {
 
       res.locals.accountData = payload
 
       return next()
     }
 
-    // If the logged user tries to enter another favorites or they are and employee or admin
+    // If the logged user tries to enter and they are and employee or admin
     req.flash("notice", "Not permitted access. You should log in with your client account.")
     return res.redirect("/account/")
 
